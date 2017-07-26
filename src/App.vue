@@ -1,9 +1,15 @@
 <script>
+import photos from './components/photos';
+
 export default {
   name: 'app',
+  components: {
+    'photos': photos
+  },
   data(){
     return {
       authorized: false,
+      scope: 'email, public_profile, user_photos',
       profile: {}
     }
   },
@@ -26,26 +32,29 @@ export default {
         appId      : '1443327865754667',
         cookie     : true,
         xfbml      : true,
-        version    : 'v2.8'
+        version    : 'v2.10'
       });
       FB.AppEvents.logPageView();
+
       // 不 check 的話 getProfile 會 get 不到
       checkLoginState();
     };
   },
   methods: {
     getProfile(){
-      FB.api('/me?fields=name,id,email,friends', response => {
+      FB.api('/me?fields=name,id,email', response => {
         this.$set(this, 'profile', response)
       });
     },
     statusChangeCallback(response){
-      if (response.status === 'connected') {
+      if (response.status === 'connected'){
         this.authorized = true;
         this.getProfile();
-      } else if (response.status === 'not_authorized') {
+      }
+      else if (response.status === 'not_authorized'){
         this.authorized = false;
-      } else {
+      }
+      else {
         this.authorized = false;
       }
     }
@@ -55,13 +64,13 @@ export default {
 
 <style lang="scss">
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   font-size: 18px;
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
 
   .profile{
+    margin-bottom: 20px;
     
     .name{
       margin-bottom: 10px;
@@ -84,7 +93,7 @@ export default {
 
 <template>
   <div id="app">
-    <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false" data-scope="email, public_profile, user_friends" onlogin="checkLoginState"></div>
+    <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false" :data-scope="scope" onlogin="checkLoginState"></div>
     <br>
     <br>
 
@@ -96,6 +105,8 @@ export default {
       </div>
     </div>
     </transition>
+
+    <photos v-if="authorized"></photos>
     <!-- <router-view></router-view> -->
   </div>
 </template>
