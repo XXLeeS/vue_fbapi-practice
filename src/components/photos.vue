@@ -53,12 +53,8 @@ export default {
 </script>
 
 <style lang="scss">
-.margin-bottom{
-    margin-bottom: 20px;
-}
 #photos{
-    width: 70vw;
-    margin: auto;
+    
 
     .image{
         width: 100%;

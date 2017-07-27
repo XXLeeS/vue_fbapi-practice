@@ -63,21 +63,27 @@ export default {
 </script>
 
 <style lang="scss">
+.margin-bottom{
+    margin-bottom: 20px;
+}
+
 #app {
   font-size: 18px;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  width: 70vw;
+  margin: 50px auto;
 
-  .profile{
-    margin-bottom: 20px;
+  #profile{
     
     .name{
-      margin-bottom: 10px;
+      
     }
     .img-wrapper{
+      width: 100%;
       
       img{
+        width: 100%;
         border-radius: 50%;
       }
     }
@@ -93,17 +99,19 @@ export default {
 
 <template>
   <div id="app">
-    <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false" :data-scope="scope" onlogin="checkLoginState"></div>
-    <br>
-    <br>
+    <div class="fb-login-button margin-bottom" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false" :data-scope="scope" onlogin="checkLoginState"></div>
 
     <transition name="fade">
-    <div class="profile" v-if="authorized">
-      <div class="name">{{ profile.name }}</div>
-      <div class="img-wrapper">
-        <img :src="profilePicture" alt="">
-      </div>
-    </div>
+    <Row :gutter="16" type="flex" align="middle" id="profile" class="margin-bottom" v-if="authorized">
+      <Col offset="1" span="6">
+        <div class="img-wrapper">
+          <img :src="profilePicture" alt="">
+        </div>
+      </Col>
+      <Col offset="1" span="6">
+        <h2 class="name">{{ profile.name }}</h2>
+      </Col>
+    </Row>
     </transition>
 
     <photos v-if="authorized"></photos>
