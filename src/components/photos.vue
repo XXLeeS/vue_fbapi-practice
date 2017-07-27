@@ -54,8 +54,6 @@ export default {
 
 <style lang="scss">
 #photos{
-    
-
     .image{
         width: 100%;
         padding-top: 100%;
@@ -68,6 +66,13 @@ export default {
         padding: 10px;
         color: #333;
     }
+    .scale-enter-active, .scale-leave-active{
+        transition: all .5s;
+    }
+    .scale-enter, .scale-leave-to{
+        opacity: 0;
+        transform: scale(.5);
+    }
 }
 
 </style>
@@ -75,8 +80,9 @@ export default {
 
 <template>
     <div id="photos">
-        <Row :gutter="16">
-            <Col v-for="photo in photos" :key="photo.id" :span="6" class="margin-bottom">
+        <!-- <Row :gutter="16"> -->
+        <transition-group name="scale" tag="div" class="ivu-row"> 
+            <Col v-for="photo in photos" :key="photo.id" span="6" class="margin-bottom" style="padding: 0 8px;">
                 <a :href="photo.link" target="_blank">
                     <Card :padding="0">
                         <div class="image" :style="`background-image: url(${photo.images[sizeIndex].source});`"></div>
@@ -94,8 +100,9 @@ export default {
                         </div>
                     </Card>
                 </a>
-            </Col>
-        </Row>
+            </Col>                
+        </transition-group> 
+        <!-- </Row> -->
         <Row class="margin-bottom">
             <Col :span="6" offset="9">
                 <Button @click="getPaging" size="large" long>Load More</Button>
