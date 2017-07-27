@@ -4,6 +4,7 @@ export default {
   data(){
       return{
         photos: [],
+        pagingNext: '',
         sizeIndex: 5,    // specific the size of returned images by arr index
       }
   },
@@ -12,25 +13,28 @@ export default {
   },
   methods: {
     getPhotos(){
-        FB.api('/me/photos?type=uploaded&fields=images,link,likes.summary(true).limit(0),comments.limit(100){comment_count}', response => {
-            this.$set(this, 'photos', response.data);
+        FB.api('/me/photos?limit=24&type=uploaded&fields=images,link,likes.summary(true).limit(0),comments.limit(100){comment_count}', response => {
+            this.photos = this.photos.concat(response.data);
+            this.pagingNext = response.paging.next;
         });
     },
-    // getPaging(url, tmpData){
-    //     return new Promise((resolve, reject) => {
-    //         fetch(url)
-    //         .then(res => {
-    //             tmpData = tmpData.concat(res.data);
+    getPaging(){
+        fetch(this.pagingNext)
+        .then(res => {
+            if(!res.ok){
+                console.log(res.status);
+            }
 
-    //             if(res.paging.next){
-    //                 this.getPaging(res.paging.next, tmpData);
-    //             }
-    //             else{
-    //                 resolve(tmpData);
-    //             }
-    //         })
-    //     })
-    // },
+            return res.json();
+        })
+        .then(json => {
+            this.photos = this.photos.concat(json.data);
+            this.pagingNext = json.paging.next;
+        })
+        .catch(error => {
+            console.error(error);
+        })
+    },
     // getComments(ids){
     //     let str = ids.join();
     //     FB.api(`/?ids=${ids}`, response => {
@@ -66,6 +70,7 @@ export default {
         text-align: left;
         font-size: 18px;
         padding: 10px;
+        color: #333;
     }
 }
 
@@ -74,7 +79,7 @@ export default {
 
 <template>
     <div id="photos">
-         <Row :gutter="16">
+        <Row :gutter="16">
             <Col v-for="photo in photos" :key="photo.id" :span="6" class="margin-bottom">
                 <a :href="photo.link" target="_blank">
                     <Card :padding="0">
@@ -94,7 +99,12 @@ export default {
                     </Card>
                 </a>
             </Col>
-        </Row> 
+        </Row>
+        <Row class="margin-bottom">
+            <Col :span="6" offset="9">
+                <Button @click="getPaging" size="large" long>Load More</Button>
+            </Col>
+        </Row>
     </div>
 </template>
 
