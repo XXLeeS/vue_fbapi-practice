@@ -62,6 +62,13 @@ export default {
     getOffset(i){
         return `${i * -100}%`;
     },
+
+    afterEnterStretch(el){
+        el.classList.add('stretched');
+    },
+    beforeLeaveStretch(el){
+        el.classList.remove('stretched');
+    }
   }
 
 }
@@ -76,6 +83,18 @@ export default {
         opacity: 0;
         transform: scale(.5);
     }
+
+    $stretch_height: 300px;
+    .stretch-enter-active, .stretch-leave-active{
+        transition: all .3s;
+    }
+    .stretch-enter, .stretch-leave-to{
+        height: 0;
+    }
+    .stretch-enter-to, .stretch-leave{
+        height: $stretch_height;
+    }
+
     .photo__brief{
         position: relative;
         cursor: pointer;
@@ -105,8 +124,13 @@ export default {
     .photo__detail{
         position: relative;
         width: 400%;
+        // height: 200px;
         background-color: #333;
         color: #fff;
+
+        &.stretched{
+            height: $stretch_height;
+        }
 
         .close-btn{
             position: absolute;
@@ -150,9 +174,12 @@ export default {
                             </div>
                         </Card>
 
+                        <transition :duration="300"> 
                         <div v-if="expanded[index]" class="arrow-up"></div>
+                        </transition> 
                     </div>
                 <!-- </a> -->
+                <transition name="stretch" @after-enter="afterEnterStretch" @before-leave="beforeLeaveStretch">
                 <div v-if="expanded[index]" class="photo__detail" :style="`margin-left: ${getOffset(index%4)};`">
                     <div class="close-btn" @click="closeDetail(index)">
                         <Icon type="close"></Icon>
@@ -164,6 +191,7 @@ export default {
                         <br>
                     </div>
                 </div>
+                </transition>
             </div>                
         </transition-group> 
         <!-- </Row> -->
