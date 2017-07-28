@@ -1,6 +1,10 @@
 <script>
+import photo_detail from './photo_detail';
 export default {
   name: 'photos',
+  components: {
+    'photo-detail': photo_detail
+  },
   data(){
       return{
         photos: [],
@@ -10,15 +14,15 @@ export default {
       }
   },
   created(){
-    this.getPhotos();
+    this.fetchPhotos();
   },
   methods: {
-    getPhotos(){
+    fetchPhotos(){
         FB.api('/me/photos?limit=24&type=uploaded&fields=images,link,likes.summary(true).limit(0),comments.limit(100){comment_count}', response => {
             this.setResponse(response);
         });
     },
-    getPaging(){
+    fetchPaging(){
         fetch(this.pagingNext)
         .then(res => {
             if(!res.ok){
@@ -184,12 +188,7 @@ export default {
                     <div class="close-btn" @click="closeDetail(index)">
                         <Icon type="close"></Icon>
                     </div>
-                    <div>
-                        hey
-                        <br>
-                        hey
-                        <br>
-                    </div>
+                    <photo-detail :id="photo.id"></photo-detail>
                 </div>
                 </transition>
             </div>                
@@ -197,7 +196,7 @@ export default {
         <!-- </Row> -->
         <Row class="margin-bottom">
             <Col :span="6" offset="9">
-                <Button @click="getPaging" size="large" long>Load More</Button>
+                <Button @click="fetchPaging" size="large" long>Load More</Button>
             </Col>
         </Row>
     </div>
