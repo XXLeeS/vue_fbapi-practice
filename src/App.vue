@@ -9,7 +9,7 @@ export default {
   data(){
     return {
       authorized: false,
-      scope: 'email, public_profile, user_photos',
+      scope: 'email, public_profile, user_photos, user_friends',
       profile: {}
     }
   },
